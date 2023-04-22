@@ -10,6 +10,7 @@ WIP, will add a tracker of what i've implemented so far.
 - [ ] NegativeFixInt
 - [x] FixStr
 - [ ] Str16
+- [x] FixArray
 - [x] FixMap
 - [ ] Map16
 

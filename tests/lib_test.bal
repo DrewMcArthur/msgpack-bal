@@ -20,6 +20,8 @@ function getTestCases() returns TestCase[][] {
             ]
         } ]
         , [{"input": {}, "output": [0x80]}]
+        , [{"input": [], "output": [0x90]}]
+        , [{"input": [0], "output": [0x91, 0x00]}]
         , [{
             "input": {"a": "b"},
             "output": [0x81,0xa1,0x61,0xa1,0x62]
