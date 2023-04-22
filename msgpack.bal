@@ -57,7 +57,7 @@ function encode_int(int n) returns byte[]|error {
         return encode_signed_int(n);
     } else if n < 0 {
         return encode_negative_fixint(n);
-    } else if n < 0x7f{
+    } else if n < 0x7f {
         return encode_positive_fixint(n);
     } else {
         return error("ints that large not implemented");
@@ -112,22 +112,23 @@ function encode_array16(json[] data) returns byte[]|error {
     }
     return output;
 }
+
 function toBigEndian(int n) returns byte[]|error {
     return error("creating big endian bytearray from an int not yet implemented");
 }
 
 function encode_map(map<json> data) returns byte[]|error {
-    io:println("encoding map");  
+    io:println("encoding map");
     int length = 0;
     byte[] output = [];
     foreach string key in data.keys() {
-        length=length+1;
+        length = length + 1;
         byte[] encoded_key = check encode(key);
         output.push(...encoded_key);
         byte[] encoded_val = check encode(data[key]);
         output.push(...encoded_val);
     }
-    int first_byte = 0x80+length;
+    int first_byte = 0x80 + length;
     if first_byte > 0xff {
         return error("int overflow on length");
     }
@@ -164,6 +165,7 @@ function encode_short_str_first_byte(int n) returns byte|error {
 function isPositiveFixInt(byte b) returns boolean {
     return (b & 0x80) == 0x00;
 }
+
 function isFixStr(byte b) returns boolean {
     return (b & 0xe0) == 0xa0;
 }
@@ -239,7 +241,7 @@ function handleFixArray(byte[] data) returns json[]|error {
     int array_length = data[0] & 0x0f;
     json[] output = [];
     byte[] array_data = data.slice(1, data.length());
-    foreach int i in 1...array_length {
+    foreach int i in 1 ... array_length {
         int item_length = check getItemLength(array_data);
         // todo: this won't work for nested arrays, we need to pop off somehow.
         output.push(check decode(array_data));
@@ -254,12 +256,12 @@ function handleFixMap(byte[] data) returns map<json>|error {
     if length == 0 {
         return {};
     }
-    byte[] map_data = data.slice(1,data.length());
+    byte[] map_data = data.slice(1, data.length());
     map<json> result = {};
-    foreach int i in 1...length {
+    foreach int i in 1 ... length {
         int key_length = check getItemLength(map_data);
         var key = check decode(map_data);
-        map_data = map_data.slice(key_length,map_data.length());
+        map_data = map_data.slice(key_length, map_data.length());
         int val_length = check getItemLength(map_data);
         var val = check decode(map_data);
         map_data = map_data.slice(val_length, map_data.length());
@@ -281,7 +283,7 @@ function getItemLength(byte[] data) returns int|error {
         return 1;
     }
     if isFixStr(first_byte) {
-        return 1+getFixStrLength(first_byte);
+        return 1 + getFixStrLength(first_byte);
     }
     return error(string `item length not implemented for 0x${first_byte.toHexString()}`);
 }
