@@ -1,10 +1,14 @@
 import ballerina/io;
+
 # encodes data of any type according to the msgpack spec
 #
 # + data - the data to be encoded
 # + return - the encoded data an array of bytes
-public function encode(any data) returns byte[]|error {
+public function encode(json data) returns byte[]|error {
     io:println(`encoding ${data}`);
+    if data is int {
+        return encode_int(data);
+    }
     if data is string {
         return encode_string(data);
     }
@@ -18,12 +22,14 @@ public function encode(any data) returns byte[]|error {
 #
 # + data - byte array encoded according to msgpack spec
 # + return - deserialized data
-public function decode(byte[] data) returns any|error {
+public function decode(byte[] data) returns json|error {
     if data.length() == 0 {
         return error("empty input");
     }
     var first_byte = data[0];
-    if isFixStr(first_byte) {
+    if isPositiveFixInt(first_byte) {
+        return handlePositiveFixInt(data);
+    } else if isFixStr(first_byte) {
         return handleFixStr(data);
     } else if isStr8(first_byte) {
         return handleStr8(data);
@@ -38,7 +44,38 @@ public function decode(byte[] data) returns any|error {
     return error("not implemented");
 }
 
-function encode_map(map<any> data) returns byte[]|error {
+////////////////////////
+/// encoding helpers ///
+////////////////////////
+function encode_int(int n) returns byte[]|error {
+    if n < -0x1f {
+        return encode_signed_int(n);
+    } else if n < 0 {
+        return encode_negative_fixint(n);
+    } else if n < 0x7f{
+        return encode_positive_fixint(n);
+    } else {
+        return error("ints that large not implemented");
+    }
+}
+
+function encode_signed_int(int n) returns error {
+    return error("not implemented");
+}
+
+function encode_negative_fixint(int n) returns error {
+    return error("not implemented");
+}
+
+function encode_positive_fixint(int n) returns byte[]|error {
+    if n >= 0x80 {
+        // todo: don't need this extra check
+        return error("int too large for fixint");
+    }
+    return [<byte>n];
+}
+
+function encode_map(map<json> data) returns byte[]|error {
     io:println("encoding map");  
     int length = 0;
     byte[] output = [];
@@ -83,6 +120,9 @@ function encode_short_str_first_byte(int n) returns byte|error {
 ///////////////////////////////
 /// msgpack format checkers ///
 ///////////////////////////////
+function isPositiveFixInt(byte b) returns boolean {
+    return (b & 0x80) == 0x00;
+}
 function isFixStr(byte b) returns boolean {
     return (b & 0xe0) == 0xa0;
 }
@@ -106,11 +146,15 @@ function isMap32(byte b) returns boolean {
 ///////////////////////////////
 /// msgpack format handlers ///
 ///////////////////////////////
+function handlePositiveFixInt(byte[] data) returns int {
+    return <int>data[0];
+}
+
 function handleFixStr(byte[] data) returns string {
     byte first_byte = data[0];
     // String with length less than 32
     // Get length from last three bits
-    int length = getFixStrLength(first_byte);
+    int length = getFixStrLength(first_byte) - 1;
     // Get string bytes from input
     byte[] stringBytes = data.slice(1, length + 1);
     // Convert bytes to string
@@ -146,21 +190,21 @@ function handleStr8(byte[] data) returns string {
     return output;
 }
 
-function handleFixMap(byte[] data) returns map<any>|error {
+function handleFixMap(byte[] data) returns map<json>|error {
     byte first_byte = data[0];
     int length = first_byte & 0x0f;
     if length == 0 {
         return {};
     }
     byte[] map_data = data.slice(1,data.length());
-    map<any> result = {};
+    map<json> result = {};
     foreach int i in 1...length {
         int key_length = check getItemLength(map_data);
         var key = check decode(map_data);
-        map_data = map_data.slice(key_length+1,map_data.length());
+        map_data = map_data.slice(key_length,map_data.length());
         int val_length = check getItemLength(map_data);
         var val = check decode(map_data);
-        map_data = map_data.slice(val_length+1, map_data.length());
+        map_data = map_data.slice(val_length, map_data.length());
         if !(key is string) {
             return error("expected map key to be string");
         }
@@ -171,6 +215,10 @@ function handleFixMap(byte[] data) returns map<any>|error {
 
 function getItemLength(byte[] data) returns int|error {
     byte first_byte = data[0];
+    if isPositiveFixInt(first_byte)
+    {
+        return 1;
+    }
     if isFixStr(first_byte)
     {
         return getFixStrLength(first_byte);
@@ -178,14 +226,14 @@ function getItemLength(byte[] data) returns int|error {
     return error("not implemented");
 }
 
-function handleMap16(byte[] data) returns map<any>|error {
+function handleMap16(byte[] data) returns map<json>|error {
     return error("not implemented");
 }
 
-function handleMap32(byte[] data) returns map<any>|error {
+function handleMap32(byte[] data) returns map<json>|error {
     return error("not implemented");
 }
 
 function getFixStrLength(byte b) returns int {
-    return b & 0x1f;
+    return 1+(b & 0x1f);
 }

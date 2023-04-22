@@ -6,6 +6,8 @@ WIP, will add a tracker of what i've implemented so far.
 
 ### Formats implemented
 
+- [x] PositiveFixInt
+- [ ] NegativeFixInt
 - [x] FixStr
 - [ ] Str16
 - [x] FixMap

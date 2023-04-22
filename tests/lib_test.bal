@@ -2,7 +2,7 @@ import ballerina/io;
 import ballerina/test;
 
 type TestCase record {
-    anydata input;
+    json input;
     byte[]|error output;
 };
 
@@ -23,6 +23,10 @@ function getTestCases() returns TestCase[][] {
         , [{
             "input": {"a": "b"},
             "output": [0x81,0xa1,0x61,0xa1,0x62]
+        }]
+        , [{
+            "input": {"id": 0},
+            "output": [0x81,0xa2,0x69,0x64,0x00]
         }]
     ];
 }
