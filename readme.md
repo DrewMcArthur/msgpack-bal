@@ -15,3 +15,5 @@ WIP, will add a tracker of what i've implemented so far.
 
 - [ ] create a big json file of test cases
 - [ ] put a checkbox of msgpack format types here 
+- [ ] separate functions into different files
+- [ ] refactor
