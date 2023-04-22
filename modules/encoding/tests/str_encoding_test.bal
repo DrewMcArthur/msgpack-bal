@@ -1,4 +1,5 @@
 import ballerina/test;
+import msgpack.core;
 @test:Config { }
 function test_encode_short_str_first_byte()
 {
@@ -43,6 +44,6 @@ function test_encode_short_str_first_byte()
     foreach int i in 0...31 {
         byte|error actual = encode_short_str_first_byte(i);
         byte|error expected = expectedResults[i];
-        assertEqualsOrError(actual, expected);
+        core:assertEqualsOrError(actual, expected);
     }
 }
