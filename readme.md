@@ -6,13 +6,54 @@ WIP, will add a tracker of what i've implemented so far.
 
 ### Formats implemented
 
-- [x] PositiveFixInt
-- [ ] NegativeFixInt
-- [x] FixStr
-- [ ] Str16
-- [x] FixArray
-- [x] FixMap
-- [ ] Map16
+from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/spec.md#formats)
+
+- [ ] nil format
+    - [ ] nil
+- [ ] bool format family
+    - [ ] true
+    - [ ] false
+- [ ] int format family
+    - [x] PositiveFixInt
+    - [ ] NegativeFixInt
+    - [ ] Uint8
+    - [ ] Uint16
+    - [ ] Uint32
+    - [ ] Uint64
+    - [ ] Int8
+    - [ ] Int16
+    - [ ] Int32
+    - [ ] Int64
+- [ ] float format family
+    - [ ] Float32
+    - [ ] Float64
+- [ ] str format family
+    - [x] FixStr 
+    - [ ] Str8
+    - [ ] Str16
+    - [ ] Str32
+- [ ] bin format family
+    - [ ] Bin8
+    - [ ] Bin16
+    - [ ] Bin32
+- [ ] array format family
+    - [x] FixArray
+    - [ ] Array16
+    - [ ] Array32
+- [ ] map format family
+    - [x] FixMap
+    - [ ] Map16
+    - [ ] Map32
+- [ ] ext format family
+    - [ ] Ext8
+    - [ ] Ext16
+    - [ ] Ext32
+    - [ ] FixExt1
+    - [ ] FixExt2
+    - [ ] FixExt4
+    - [ ] FixExt8
+    - [ ] FixExt16
+- [ ] Timestamp extension type
 
 ## Roadmap
 
