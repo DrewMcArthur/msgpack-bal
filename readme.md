@@ -59,7 +59,8 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
 
 This is a quick and dirty implementation, generally building out functionality first and will refactor after.
 
-- **v0.3**: (current version) implementation of some, but not all of the spec.  quick & dirty implementation.
+- **v0.3**: implementation of some, but not all of the spec.  quick & dirty implementation.
+- **v0.4**: added benchmarks, coreutil for int->byte[] map16
 - **v1.0**: full compatibility with the msgpack spec, including a full test suite and benchmarks
 - **v2.0**: refactored codebase including using the input data as a fifo stack for decoding
 - **v3.0**: ???

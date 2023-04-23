@@ -15,7 +15,7 @@ public function runBenchmarks(map<BenchmarkFunction> functions) {
 }
 
 function printBenchmark(string functionName, Benchmark result) returns string {
-    return string `${core:padStr(16, functionName, " ")} | ${core:padNum(12, (<float>result.avgTime)*1000)} | ${core:padNum(12, <float>result.totalTime)}`;
+    return string `${core:padStr(16, functionName, " ")} | ${core:padNum(12, (<float>result.avgTime) * 1000)} | ${core:padNum(12, <float>result.totalTime)}`;
 }
 
 type Benchmark record {
@@ -35,8 +35,8 @@ function executeBenchmarks(map<BenchmarkFunction> functions) returns map<Benchma
 }
 
 function executeBenchmark(BenchmarkFunction fn) returns Benchmark {
-    int warmupRuns = 20;
-    int benchmarkRuns = 200;
+    int warmupRuns = 25;
+    int benchmarkRuns = 50000;
 
     int i = 0;
     while i < warmupRuns {
