@@ -16,11 +16,8 @@ public function decode(byte[] data) returns json|error {
     if isInt(first) {
         return handleInt(data);
     }
-    if isFixStr(first) {
-        return handleFixStr(data);
-    }
-    if isStr8(first) {
-        return handleStr8(data);
+    if isStr(first) {
+        return handleStr(data);
     }
     if isFixArray(first) {
         return handleFixArray(data);
@@ -44,8 +41,9 @@ function getItemLength(byte[] data) returns int|error {
     if isPositiveFixInt(first_byte) {
         return 1;
     }
-    if isFixStr(first_byte) {
-        return 1 + getFixStrLength(first_byte);
+    if isStr(first_byte) {
+        var [length, _] = check getStrLengthOffset(data);
+        return 1 + length;
     }
     return error(string `item length not implemented for 0x${first_byte.toHexString()}`);
 }

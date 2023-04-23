@@ -1,22 +1,24 @@
 function encode_string(string data) returns byte[]|error {
-    var data_len = data.length();
-    if data_len < 32 {
-        return encode_short_str(data, data_len);
-    }
-    return error("string length > 31 bytes; unsupported");
+    byte[] first = check getStrlenIndicatorBytes(data.length());
+    return [...first, ...data.toBytes()];
 }
 
-function encode_short_str(string data, int len) returns byte[]|error {
-    byte first_byte = check encode_short_str_first_byte(len);
-    return [first_byte, ...data.toBytes()];
-}
-
-function encode_short_str_first_byte(int n) returns byte|error {
-    if n < 0 {
-        return error("length of string to encode cannot be less than 0");
+// given the length of a string, return the leading indicators according to msgpack
+// https://github.com/msgpack/msgpack/blob/master/spec.md#str-format-family
+function getStrlenIndicatorBytes(int len) returns byte[]|error {
+    if len < 32 {
+        return [<byte>(0xa0 + len)];
     }
-    if n > 31 {
-        return error("length of short string to encode cannot be >31");
+    byte indicator;
+    byte[] lenBytes = unsignedIntToBytes(len);
+    if len < (2 << 8) {
+        indicator = 0xd9;
+    } else if len < (2 << 16) {
+        indicator = 0xda;
+    } else if len < (2 << 32) {
+        indicator = 0xdb;
+    } else {
+        return error("strings that large not supported");
     }
-    return <byte>(0xa0 + n);
+    return [indicator, ...lenBytes];
 }
