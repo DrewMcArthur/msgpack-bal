@@ -2,9 +2,35 @@
 
 an implementation of the [msgpack](https://msgpack.org) spec in ballerina.
 
-WIP, will add a tracker of what i've implemented so far.
+!!! this library is still a WIP, see the [progress tracker](#formats-implemented) below.
 
-### Formats implemented
+## how to use
+
+i won't publish this onto ballerina central until it hits v1, so if
+you'd like to use v0, you can clone the repo, package it and publish 
+it to your local repository:
+```bash
+bal pack && bal push --repository local
+```
+and then import it from your ballerina project by tossing this into your `Ballerina.toml` file
+```toml
+[[dependency]]
+org="drewmca"
+name="msgpack"
+version="0.0.4"
+repository="local"
+```
+and your editor should see the module and let you use the library, something like this:
+```bal
+import ballerina/io;
+import drewmca/msgpack;
+json obj = {"hello": "world!"}
+byte[] encoded = msgpack:encode(obj);
+json decoded = msgpack:decode(encoded);
+io:println(decoded);
+```
+
+## Formats implemented
 
 from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/spec.md#formats)
 

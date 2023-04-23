@@ -1,4 +1,4 @@
-import drew/msgpack;
+import drewmca/msgpack;
 
 public type BenchmarkFunction function () returns error?;
 
