@@ -62,14 +62,14 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [ ] Bin8
     - [ ] Bin16
     - [ ] Bin32
-- [ ] array format family
+- [x] array format family
     - [x] FixArray
-    - [ ] Array16
-    - [ ] Array32
-- [ ] map format family
+    - [x] Array16
+    - [x] Array32 (untested)
+- [x] map format family
     - [x] FixMap
-    - [ ] Map16
-    - [ ] Map32
+    - [x] Map16
+    - [x] Map32
 - [ ] ext format family
     - [ ] Ext8
     - [ ] Ext16

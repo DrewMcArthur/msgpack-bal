@@ -1,4 +1,6 @@
 // returns true if byte b signifies an item in the int format family
+import msgpack.core;
+
 function isInt(byte b) returns boolean {
     return isPositiveFixInt(b) || isNegativeFixInt(b) || (b > 0xcb && b < 0xd4);
 }
@@ -102,6 +104,21 @@ function handleUint(byte[] data, int nBytes) returns int {
         out = (out << 8) | data[i];
     }
     return out;
+}
+
+// takes in an array of bytes
+// pops off the number of bytes specified
+// returns [a big-endian int, the remainder of the data]
+function handleUintShift(byte[] data, int nBytes) returns [int, byte[]] {
+    int out = 0;
+    int i = 0;
+    byte[] newdata = data;
+    byte next;
+    while i < nBytes {
+        [next, newdata] = core:shift(newdata);
+        out = (out << 8) | next;
+    }
+    return [out, newdata];
 }
 
 function handleUint8(byte[] data) returns int {

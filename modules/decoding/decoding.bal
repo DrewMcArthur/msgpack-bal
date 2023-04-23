@@ -1,35 +1,44 @@
+import msgpack.core;
+
 public function decode(byte[] data) returns json|error {
+    var [output, _] = check decodeShift(data);
+    return output;
+}
+
+function decodeShift(byte[] data) returns [json, byte[]]|error {
     if data.length() == 0 {
         return error("empty input");
     }
 
-    byte first = data[0];
+    byte first;
+    byte[] newdata;
+    [first, newdata] = core:shift(data);
     if first == 0xc0 {
-        return ();
+        return [(), newdata];
     }
     if first == 0xc2 {
-        return false;
+        return [false, newdata];
     }
     if first == 0xc3 {
-        return true;
+        return [true, newdata];
     }
     if isInt(first) {
-        return handleInt(data);
+        return [check handleInt(data), newdata];
     }
     if isStr(first) {
-        return handleStr(data);
+        return [check handleStr(data), newdata];
     }
-    if isFixArray(first) {
-        return handleFixArray(data);
+    if isArray(first) {
+        return handleArray(first, data);
     }
     if isFixMap(first) {
-        return handleFixMap(data);
+        return [check handleFixMap(data), newdata];
     }
     if isMap16(first) {
-        return handleMap16(data);
+        return [check handleMap16(data), newdata];
     }
     if isMap32(first) {
-        return handleMap32(data);
+        return [check handleMap32(data), newdata];
     }
 
     return error("decoding type unknown: not implemented");
