@@ -23,7 +23,7 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [x] Int8
     - [x] Int16
     - [x] Int32
-    - [ ] Int64
+    - [ ] Int64 (not implemented bc ballerina cannot do `1 << 64`)
 - [ ] float format family
     - [ ] Float32
     - [ ] Float64
@@ -31,7 +31,7 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [x] FixStr 
     - [x] Str8
     - [x] Str16
-    - [?] Str32 (untested, but probably works)
+    - [ ] Str32 (implemented but untested)
 - [ ] bin format family
     - [ ] Bin8
     - [ ] Bin16
@@ -69,5 +69,18 @@ This is a quick and dirty implementation, generally building out functionality f
 
 - [ ] create a big json file of test cases
 - [x] put a checkbox of msgpack format types here 
-- [ ] separate functions into different files
+- [x] separate functions into different files
 - [ ] refactor decoding to pop bytes off the array
+      e.g.
+
+``` 
+byte first = shift(data);
+match first {
+    var b if isStr(b) => {
+        // pops 1,2,4 bytes off data, so no need to return offset 
+        // like we do now.  depends on how ballerina does 
+        // array references, if we're passing a copy or by reference here.
+        var length = getStrLength(b, data); 
+        handleStr(data, length);
+    }
+}
