@@ -1,5 +1,7 @@
 import drew/msgpack;
 
+public type BenchmarkFunction function () returns error?;
+
 function getBenchmarkFunctions() returns map<(string|BenchmarkFunction)[]> {
     return {
         "encodeEmptyMap": ["encodeEmptyMap", encodeEmptyMap],

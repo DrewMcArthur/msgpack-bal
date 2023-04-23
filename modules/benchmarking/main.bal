@@ -24,8 +24,6 @@ type Benchmark record {
     time:Seconds avgTime;
 };
 
-public type BenchmarkFunction function () returns error?;
-
 function executeBenchmarks(map<BenchmarkFunction> functions) returns map<Benchmark> {
     map<Benchmark> results = {};
     foreach string functionName in functions.keys() {
