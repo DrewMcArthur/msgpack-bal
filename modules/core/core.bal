@@ -23,12 +23,9 @@ public type TestCase record {
 
 public function getTestCases() returns TestCase[][] {
     return [
-        [{"input": "", "output": [0xa0]}]
-        ,
-        [{"input": "A", "output": [0xa1, 0x41]}]
-        ,
-        [{"input": "ab", "output": [0xa2, 0x61, 0x62]}]
-        ,
+        [{"input": "", "output": [0xa0]}],
+        [{"input": "A", "output": [0xa1, 0x41]}],
+        [{"input": "ab", "output": [0xa2, 0x61, 0x62]}],
         [
             {
                 "input": "short string, under 31 bytes!",
@@ -65,21 +62,16 @@ public function getTestCases() returns TestCase[][] {
                     0x21
                 ]
             }
-        ]
-        ,
-        [{"input": {}, "output": [0x80]}]
-        ,
-        [{"input": [], "output": [0x90]}]
-        ,
-        [{"input": [0], "output": [0x91, 0x00]}]
-        ,
+        ],
+        [{"input": {}, "output": [0x80]}],
+        [{"input": [], "output": [0x90]}],
+        [{"input": [0], "output": [0x91, 0x00]}],
         [
             {
                 "input": {"a": "b"},
                 "output": [0x81, 0xa1, 0x61, 0xa1, 0x62]
             }
-        ]
-        ,
+        ],
         [
             {
                 "input": {"id": 0},
@@ -89,14 +81,14 @@ public function getTestCases() returns TestCase[][] {
     ];
 }
 
-// function getTestCaseMap() returns map<[TestCase]> {
-//     map<[TestCase]> result = {};
-//     foreach TestCase case in getTestCases()
-//     {
-//         result[<string>case.input] = [case];
-//     }
-//     return result;
-// }
+public function getTestCaseMap() returns map<TestCase[]> {
+    map<TestCase[]> result = {};
+    foreach TestCase[] case in getTestCases()
+    {
+        result[<string>case[0].input] = case;
+    }
+    return result;
+}
 
 public function padStr(int size, string value, string padChar = " ", boolean left = true) returns string {
     int diff = size - value.length();
