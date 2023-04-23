@@ -3,20 +3,35 @@ public function decode(byte[] data) returns json|error {
         return error("empty input");
     }
 
-    var first_byte = data[0];
-    if isPositiveFixInt(first_byte) {
-        return handlePositiveFixInt(data);
-    } else if isFixStr(first_byte) {
+    byte first = data[0];
+    if first == 0xc0 {
+        return ();
+    }
+    if first == 0xc2 {
+        return false;
+    }
+    if first == 0xc3 {
+        return true;
+    }
+    if isInt(first) {
+        return handleInt(data);
+    } 
+    if isFixStr(first) {
         return handleFixStr(data);
-    } else if isStr8(first_byte) {
+    } 
+    if isStr8(first) {
         return handleStr8(data);
-    } else if isFixArray(first_byte) {
+    } 
+    if isFixArray(first) {
         return handleFixArray(data);
-    } else if isFixMap(first_byte) {
+    } 
+    if isFixMap(first) {
         return handleFixMap(data);
-    } else if isMap16(first_byte) {
+    } 
+    if isMap16(first) {
         return handleMap16(data);
-    } else if isMap32(first_byte) {
+    } 
+    if isMap32(first) {
         return handleMap32(data);
     }
 

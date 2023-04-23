@@ -8,18 +8,18 @@ WIP, will add a tracker of what i've implemented so far.
 
 from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/spec.md#formats)
 
-- [ ] nil format
-    - [ ] nil
-- [ ] bool format family
-    - [ ] true
-    - [ ] false
+- [x] nil format
+    - [x] nil
+- [x] bool format family
+    - [x] true
+    - [x] false
 - [ ] int format family
     - [x] PositiveFixInt
     - [ ] NegativeFixInt
-    - [ ] Uint8
-    - [ ] Uint16
-    - [ ] Uint32
-    - [ ] Uint64
+    - [x] Uint8
+    - [x] Uint16
+    - [x] Uint32
+    - [x] Uint64
     - [ ] Int8
     - [ ] Int16
     - [ ] Int32

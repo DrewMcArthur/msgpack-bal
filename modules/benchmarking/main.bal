@@ -32,9 +32,9 @@ function executeBenchmarks(map<BenchmarkFunction> functions) returns map<Benchma
     return results;
 }
 
-function executeBenchmark(BenchmarkFunction fn) returns Benchmark {
-    int warmupRuns = 25;
-    int benchmarkRuns = 50000;
+function executeBenchmark(
+    BenchmarkFunction fn, int warmupRuns = 20, int benchmarkRuns = 200
+) returns Benchmark {
 
     int i = 0;
     while i < warmupRuns {
