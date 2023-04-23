@@ -1,6 +1,6 @@
 function encode_string(string data) returns byte[]|error {
     var data_len = data.length();
-    if data_len < 31 {
+    if data_len < 32 {
         return encode_short_str(data, data_len);
     }
     return error("string length > 31 bytes; unsupported");
