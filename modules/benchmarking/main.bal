@@ -33,7 +33,7 @@ function executeBenchmarks(map<BenchmarkFunction> functions) returns map<Benchma
 }
 
 function executeBenchmark(
-    BenchmarkFunction fn, int warmupRuns = 20, int benchmarkRuns = 200
+        BenchmarkFunction fn, int warmupRuns = 20, int benchmarkRuns = 200
 ) returns Benchmark {
 
     int i = 0;

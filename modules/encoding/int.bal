@@ -12,7 +12,7 @@ function encodeSignedInt(int n) returns byte[]|error {
     byte[] intBytes = signedIntToBytes(n);
     byte first;
 
-    if n <= -(32768*32768) {
+    if n <= -(32768 * 32768) {
         first = 0xd3;
         intBytes = padBytesLeft(intBytes, 8);
     } else if n <= -32768 {

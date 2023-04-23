@@ -15,22 +15,22 @@ public function decode(byte[] data) returns json|error {
     }
     if isInt(first) {
         return handleInt(data);
-    } 
+    }
     if isFixStr(first) {
         return handleFixStr(data);
-    } 
+    }
     if isStr8(first) {
         return handleStr8(data);
-    } 
+    }
     if isFixArray(first) {
         return handleFixArray(data);
-    } 
+    }
     if isFixMap(first) {
         return handleFixMap(data);
-    } 
+    }
     if isMap16(first) {
         return handleMap16(data);
-    } 
+    }
     if isMap32(first) {
         return handleMap32(data);
     }
