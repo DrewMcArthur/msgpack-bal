@@ -1,6 +1,5 @@
 import ballerina/test;
 import ballerina/io;
-import drew/msgpack;
 import msgpack.core;
 
 @test:BeforeSuite
@@ -12,23 +11,4 @@ function printBenchmarkHeader() {
 function runAll(string funcName, BenchmarkFunction func) {
     Benchmark result = executeBenchmark(func);
     io:println(printBenchmark(funcName, result));
-}
-
-function getBenchmarkFunctions() returns map<(string|BenchmarkFunction)[]> {
-    return {
-        "encodeEmptyMap": ["encodeEmptyMap", encodeEmptyMap],
-        "encodeMap": ["encodeMap", encodeMap]
-    };
-}
-
-function encodeEmptyMap() returns error? {
-    json obj = {};
-    byte[] _ = check msgpack:encode(obj);
-}
-
-function encodeMap() returns error? {
-    json obj = {
-        "a": "b"
-    };
-    byte[] _ = check msgpack:encode(obj);
 }
