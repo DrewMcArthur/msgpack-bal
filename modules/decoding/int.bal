@@ -5,7 +5,7 @@ function isInt(byte b) returns boolean {
 
 type IntChecker function (byte) returns boolean;
 
-type IntHandler function (byte[]) returns int;
+type IntHandler function (byte[]) returns int|error;
 
 class IntFormatType {
     IntChecker checker;
@@ -120,28 +120,31 @@ function handleUint64(byte[] data) returns int {
     return handleUint(data, 8);
 }
 
-function handleSignedInt(byte[] data, int nBytes) returns int {
+function handleSignedInt(byte[] data, int nBytes) returns int|error {
     int out = 0;
     foreach int i in 1 ... nBytes {
         out = (out << 8) | data[i];
     }
 
-    // todo: this odesn't work iff nBytes == 8
+    if nBytes == 8 {
+        // hacky workaround, since 1 << 64 -> 1 bc 64-bit ints
+        return error("decoding signed Int64 types is not currently supported, sorry!");
+    }
     return out - (1 << (8 * nBytes));
 }
 
-function handleInt8(byte[] data) returns int {
+function handleInt8(byte[] data) returns int|error {
     return handleSignedInt(data, 1);
 }
 
-function handleInt16(byte[] data) returns int {
+function handleInt16(byte[] data) returns int|error {
     return handleSignedInt(data, 2);
 }
 
-function handleInt32(byte[] data) returns int {
+function handleInt32(byte[] data) returns int|error {
     return handleSignedInt(data, 4);
 }
 
-function handleInt64(byte[] data) returns int {
+function handleInt64(byte[] data) returns int|error {
     return handleSignedInt(data, 8);
 }
