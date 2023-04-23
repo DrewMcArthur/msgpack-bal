@@ -56,3 +56,27 @@ public function getTestCases() returns TestCase[][] {
 //     }
 //     return result;
 // }
+
+public function padStr(int size, string value, string padChar = " ", boolean left = true) returns string {
+    int diff = size - value.length();
+    if (diff < 1) {
+        return value;
+    }
+
+    string padding = "";
+    while (diff > 0) {
+        padding += padChar;
+        diff -= 1;
+    }
+
+    if left {
+        return padding + value;
+    } else {
+        return value + padding;
+    }
+}
+
+public function padNum(int size, int|float num) returns string {
+    string value = num.toString();
+    return padStr(size, value, " ");
+}

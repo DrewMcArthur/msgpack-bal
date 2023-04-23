@@ -9,8 +9,28 @@ distribution-version = "2201.5.0"
 
 [[package]]
 org = "ballerina"
+name = "io"
+version = "1.4.0"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.value"}
+]
+modules = [
+	{org = "ballerina", packageName = "io", moduleName = "io"}
+]
+
+[[package]]
+org = "ballerina"
 name = "jballerina.java"
 version = "0.0.0"
+
+[[package]]
+org = "ballerina"
+name = "lang.value"
+version = "0.0.0"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
 
 [[package]]
 org = "ballerina"
@@ -24,14 +44,28 @@ modules = [
 ]
 
 [[package]]
+org = "ballerina"
+name = "time"
+version = "2.2.4"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
+modules = [
+	{org = "ballerina", packageName = "time", moduleName = "time"}
+]
+
+[[package]]
 org = "drew"
 name = "msgpack"
 version = "0.0.3"
 dependencies = [
-	{org = "ballerina", name = "test"}
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "test"},
+	{org = "ballerina", name = "time"}
 ]
 modules = [
 	{org = "drew", packageName = "msgpack", moduleName = "msgpack"},
+	{org = "drew", packageName = "msgpack", moduleName = "msgpack.benchmarking"},
 	{org = "drew", packageName = "msgpack", moduleName = "msgpack.core"},
 	{org = "drew", packageName = "msgpack", moduleName = "msgpack.decoding"},
 	{org = "drew", packageName = "msgpack", moduleName = "msgpack.encoding"}
