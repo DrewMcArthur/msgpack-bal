@@ -11,11 +11,11 @@ function getStrlenIndicatorBytes(int len) returns byte[]|error {
     }
     byte indicator;
     byte[] lenBytes = unsignedIntToBytes(len);
-    if len < (2 << 8) {
+    if len < (1 << 8) {
         indicator = 0xd9;
-    } else if len < (2 << 16) {
+    } else if len < (1 << 16) {
         indicator = 0xda;
-    } else if len < (2 << 32) {
+    } else if len < (1 << 32) {
         indicator = 0xdb;
     } else {
         return error("strings that large not supported");

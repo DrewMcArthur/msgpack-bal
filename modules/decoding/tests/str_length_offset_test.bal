@@ -19,6 +19,7 @@ function getStrTestCases() returns StrTestCase[][] {
         [{"input": [0xbf], "output": [31, 1]}],
         [{"input": [0xd9, 0x20], "output": [0x20, 2]}],
         [{"input": [0xd9, 0xff], "output": [0xff, 2]}],
+        [{"input": [0xda, 0x01, 0x00], "output": [256, 3]}],
         [{"input": [0xda, 0xff, 0xff], "output": [65535, 3]}],
         [{"input": [0xdb, 0xff, 0xff, 0xff, 0xff], "output": [4294967295, 5]}]
     ];
