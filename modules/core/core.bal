@@ -131,7 +131,7 @@ public function padNum(int size, int|float num) returns string {
 # negative numbers are always signed
 # + return - a byte array corresponding to the input number according to settings
 public function toBytes(
-        int num, int minArraySize,
+        int num, int minArraySize = 0,
         boolean endianness = true,
         boolean signed = false
 ) returns byte[]|error {
