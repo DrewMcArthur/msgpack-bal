@@ -53,7 +53,7 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
 - [ ] float format family
     - [ ] Float32
     - [ ] Float64
-- [ ] str format family
+- [x] str format family
     - [x] FixStr 
     - [x] Str8
     - [x] Str16
@@ -65,11 +65,11 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
 - [x] array format family
     - [x] FixArray
     - [x] Array16
-    - [x] Array32 (untested)
+    - [ ] Array32 (implemented but untested)
 - [x] map format family
     - [x] FixMap
     - [x] Map16
-    - [x] Map32
+    - [ ] Map32
 - [ ] ext format family
     - [ ] Ext8
     - [ ] Ext16
