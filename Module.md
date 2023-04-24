@@ -11,4 +11,13 @@ public function encode(any data) returns byte[];
 public function decode(byte[] data) returns any;
 ```
 
-so far, only implement small maps and strings, this package is a WIP.
+## usage
+
+```bal
+import ballerina/io;
+import drewmca/msgpack;
+json obj = {"hello": "world!"}
+byte[] encoded = msgpack:encode(obj);
+json decoded = msgpack:decode(encoded);
+io:println(decoded);
+```

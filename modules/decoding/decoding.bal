@@ -1,7 +1,10 @@
 import msgpack.core;
 
 public function decode(byte[] data) returns json|error {
-    var [output, _] = check decodeShift(data);
+    var [output, leftover] = check decodeShift(data);
+    if leftover.length() > 0 {
+        return error("invalid encoding, did not expect leftover data after decoding");
+    }
     return output;
 }
 
@@ -50,8 +53,4 @@ function getItemLength(byte[] data) returns [int, byte[]]|error {
         return [1 + length, newdata];
     }
     return error(string `item length not implemented for 0x${first.toHexString()}`);
-}
-
-function getFixArrayLength(byte b) returns int {
-    return (b & 0x0f);
 }
