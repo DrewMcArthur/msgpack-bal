@@ -29,7 +29,7 @@ function decodeShift(byte[] data) returns [json, byte[]]|error {
         return [check handleStr(data), newdata];
     }
     if isArray(first) {
-        return handleArray(first, data);
+        return handleArray(first, newdata);
     }
     if isFixMap(first) {
         return [check handleFixMap(data), newdata];

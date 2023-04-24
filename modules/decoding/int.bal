@@ -117,6 +117,7 @@ function handleUintShift(byte[] data, int nBytes) returns [int, byte[]] {
     while i < nBytes {
         [next, newdata] = core:shift(newdata);
         out = (out << 8) | next;
+        i = i + 1;
     }
     return [out, newdata];
 }
