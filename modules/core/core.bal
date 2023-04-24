@@ -91,3 +91,9 @@ public function toBytes(
         return bytes;
     }
 }
+
+public function shift(byte[] data) returns [byte, byte[]] {
+    byte first = data[0];
+    byte[] newdata = data.slice(1, data.length());
+    return [first, newdata];
+}

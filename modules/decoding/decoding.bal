@@ -1,53 +1,56 @@
+import msgpack.core;
+
 public function decode(byte[] data) returns json|error {
+    var [output, leftover] = check decodeShift(data);
+    if leftover.length() > 0 {
+        return error("invalid encoding, did not expect leftover data after decoding");
+    }
+    return output;
+}
+
+function decodeShift(byte[] data) returns [json, byte[]]|error {
     if data.length() == 0 {
         return error("empty input");
     }
 
-    byte first = data[0];
+    byte first;
+    byte[] newdata;
+    [first, newdata] = core:shift(data);
     if first == 0xc0 {
-        return ();
+        return [(), newdata];
     }
     if first == 0xc2 {
-        return false;
+        return [false, newdata];
     }
     if first == 0xc3 {
-        return true;
+        return [true, newdata];
     }
     if isInt(first) {
-        return handleInt(data);
+        return handleInt(first, newdata);
     }
     if isStr(first) {
-        return handleStr(data);
+        return handleStr(first, newdata);
     }
-    if isFixArray(first) {
-        return handleFixArray(data);
+    if isArray(first) {
+        return handleArray(first, newdata);
     }
-    if isFixMap(first) {
-        return handleFixMap(data);
-    }
-    if isMap16(first) {
-        return handleMap16(data);
-    }
-    if isMap32(first) {
-        return handleMap32(data);
+    if isMap(first) {
+        return handleMap(first, newdata);
     }
 
     return error("decoding type unknown: not implemented");
 }
 
 /// returns total number of bytes 
-function getItemLength(byte[] data) returns int|error {
-    byte first_byte = data[0];
-    if isPositiveFixInt(first_byte) {
-        return 1;
+function getItemLength(byte[] data) returns [int, byte[]]|error {
+    var [first, newdata] = core:shift(data);
+    if isPositiveFixInt(first) {
+        return [1, newdata];
     }
-    if isStr(first_byte) {
-        var [length, _] = check getStrLengthOffset(data);
-        return 1 + length;
+    if isStr(first) {
+        int length;
+        [length, newdata] = check getStrLength(first, data);
+        return [1 + length, newdata];
     }
-    return error(string `item length not implemented for 0x${first_byte.toHexString()}`);
-}
-
-function getFixArrayLength(byte b) returns int {
-    return (b & 0x0f);
+    return error(string `item length not implemented for 0x${first.toHexString()}`);
 }

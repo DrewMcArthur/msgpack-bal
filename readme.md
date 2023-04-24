@@ -53,7 +53,7 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
 - [ ] float format family
     - [ ] Float32
     - [ ] Float64
-- [ ] str format family
+- [x] str format family
     - [x] FixStr 
     - [x] Str8
     - [x] Str16
@@ -62,14 +62,14 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [ ] Bin8
     - [ ] Bin16
     - [ ] Bin32
-- [ ] array format family
+- [x] array format family
     - [x] FixArray
-    - [ ] Array16
-    - [ ] Array32
-- [ ] map format family
+    - [x] Array16
+    - [ ] Array32 (implemented but untested)
+- [x] map format family
     - [x] FixMap
-    - [ ] Map16
-    - [ ] Map32
+    - [x] Map16
+    - [ ] Map32 (implemented but untested)
 - [ ] ext format family
     - [ ] Ext8
     - [ ] Ext16
@@ -87,26 +87,12 @@ This is a quick and dirty implementation, generally building out functionality f
 
 - **v0.3**: implementation of some, but not all of the spec.  quick & dirty implementation.
 - **v0.4**: added benchmarks, coreutil for int->byte[] map16, str, & int impl
+- **v0.5**: implemented maps and arrays, also refactored decoding to pop bytes off as it goes
 - **v1.0**: full compatibility with the msgpack spec, including a full test suite and benchmarks
-- **v2.0**: refactored codebase including using the input data as a fifo stack for decoding
-- **v3.0**: ???
 
 ### TODO:
 
 - [ ] create a big json file of test cases
 - [x] put a checkbox of msgpack format types here 
 - [x] separate functions into different files
-- [ ] refactor decoding to pop bytes off the array
-      e.g.
-
-``` 
-byte first = shift(data);
-match first {
-    var b if isStr(b) => {
-        // pops 1,2,4 bytes off data, so no need to return offset 
-        // like we do now.  depends on how ballerina does 
-        // array references, if we're passing a copy or by reference here.
-        var length = getStrLength(b, data); 
-        handleStr(data, length);
-    }
-}
+- [x] refactor decoding to pop bytes off the array

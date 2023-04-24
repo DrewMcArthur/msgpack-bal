@@ -1,16 +1,45 @@
-function isFixArray(byte firstByte) returns boolean {
-    return (firstByte & 0xf0) == 0x90;
+function isArray(byte first) returns boolean {
+    return isFixArray(first) || isArray16(first) || isArray32(first);
 }
 
-function handleFixArray(byte[] data) returns json[]|error {
-    int array_length = data[0] & 0x0f;
-    json[] output = [];
-    byte[] array_data = data.slice(1, data.length());
-    foreach int i in 1 ... array_length {
-        int item_length = check getItemLength(array_data);
-        // todo: this won't work for nested arrays, we need to pop off somehow.
-        output.push(check decode(array_data));
-        array_data = array_data.slice(item_length, array_data.length());
+function isFixArray(byte first) returns boolean {
+    return (first & 0xf0) == 0x90;
+}
+
+function isArray16(byte first) returns boolean {
+    return first == 0xdc;
+}
+
+function isArray32(byte first) returns boolean {
+    return first == 0xdd;
+}
+
+function handleArray(byte first, byte[] data) returns [json[], byte[]]|error {
+    int len;
+    byte[] newdata = data;
+    [len, newdata] = check getArrayLength(first, newdata);
+    int i = 0;
+    json[] out = [];
+    json decoded;
+    while i < len {
+        [decoded, newdata] = check decodeShift(newdata);
+        out.push(decoded);
+        i = i + 1;
     }
-    return output;
+    return [out, newdata];
+}
+
+function getArrayLength(byte first, byte[] data) returns [int, byte[]]|error {
+    // return the length of the upcoming array
+    if isFixArray(first) {
+        return [first & 0x0f, data];
+    }
+
+    if isArray16(first) {
+        return handleUint(data, 2);
+    } else if isArray32(first) {
+        return handleUint(data, 4);
+    }
+
+    return error(string `error getting array length: unsupported array: 0x${first}`);
 }
