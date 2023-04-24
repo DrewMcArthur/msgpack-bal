@@ -17,7 +17,7 @@ and then import it from your ballerina project by tossing this into your `Baller
 [[dependency]]
 org="drewmca"
 name="msgpack"
-version="0.0.4"
+version="0.0.5"
 repository="local"
 ```
 and your editor should see the module and let you use the library, something like this:
