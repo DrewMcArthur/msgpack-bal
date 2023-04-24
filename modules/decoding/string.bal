@@ -18,32 +18,30 @@ function isStr32(byte b) returns boolean {
     return b == 0xdb;
 }
 
-function handleStr(byte[] data) returns string|error {
-    var [length, offset] = check getStrLengthOffset(data);
+function handleStr(byte first, byte[] data) returns [string, byte[]]|error {
+    var [length, newdata] = check getStrLength(first, data);
     if length == 0 {
-        return "";
+        return ["", newdata];
     }
-    // Get string bytes from input
-    byte[] stringBytes = data.slice(offset, length + offset);
-    // Convert bytes to string
+    byte[] stringBytes = newdata.slice(0, length);
     string output = checkpanic string:fromBytes(stringBytes);
-    // Return string
-    return output;
+    return [output, newdata.slice(length)];
 }
 
-function getStrLengthOffset(byte[] data) returns [int, int]|error {
-    match data[0] {
+function getStrLength(byte first, byte[] data) returns [int, byte[]]|error {
+    // technically these don't need to be set, but the compiler thinks they should be
+    match first {
         var b if isFixStr(b) => {
-            return [(b & 0x1f), 1];
+            return [(b & 0x1f), data];
         }
         0xd9 => {
-            return [handleUint8(data), 2];
+            return handleUint8(first, data);
         }
         0xda => {
-            return [handleUint16(data), 3];
+            return handleUint16(first, data);
         }
         0xdb => {
-            return [handleUint32(data), 5];
+            return handleUint32(first, data);
         }
         _ => {
             return error(string `unknown string type 0x${data[0]}`);

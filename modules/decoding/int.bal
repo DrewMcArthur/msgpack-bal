@@ -7,7 +7,7 @@ function isInt(byte b) returns boolean {
 
 type IntChecker function (byte) returns boolean;
 
-type IntHandler function (byte[]) returns int|error;
+type IntHandler function (byte, byte[]) returns [int, byte[]]|error;
 
 class IntFormatType {
     IntChecker checker;
@@ -33,14 +33,12 @@ function getIntFormatTypes() returns IntFormatType[] {
     ];
 }
 
-function handleInt(byte[] data) returns int|error {
-    byte first = data[0];
+function handleInt(byte first, byte[] data) returns [int, byte[]]|error {
     foreach IntFormatType fmt in getIntFormatTypes() {
         if fmt.checker(first) {
-            return fmt.handler(data);
+            return fmt.handler(first, data);
         }
     }
-
     return error(string `not a known int ${first}`);
 }
 
@@ -90,79 +88,76 @@ function isInt64(byte b) returns boolean {
 ////////////////
 /// handlers ///
 ////////////////
-function handlePositiveFixInt(byte[] data) returns int {
-    return <int>data[0];
+function handlePositiveFixInt(byte first, byte[] data) returns [int, byte[]] {
+    return [<int>first, data];
 }
 
-function handleNegativeFixInt(byte[] data) returns int {
-    return <int>(data[0] & 0x1f) - 32;
-}
-
-function handleUint(byte[] data, int nBytes) returns int {
-    int out = 0;
-    foreach int i in 1 ... nBytes {
-        out = (out << 8) | data[i];
-    }
-    return out;
+function handleNegativeFixInt(byte first, byte[] data) returns [int, byte[]] {
+    return [<int>(first & 0x1f) - 32, data];
 }
 
 // takes in an array of bytes
 // pops off the number of bytes specified
 // returns [a big-endian int, the remainder of the data]
-function handleUintShift(byte[] data, int nBytes) returns [int, byte[]] {
+function handleUint(byte[] data, int nBytes) returns [int, byte[]] {
     int out = 0;
     int i = 0;
     byte[] newdata = data;
-    byte next;
     while i < nBytes {
+        i = i + 1;
+        byte next;
         [next, newdata] = core:shift(newdata);
         out = (out << 8) | next;
-        i = i + 1;
     }
     return [out, newdata];
 }
 
-function handleUint8(byte[] data) returns int {
+function handleUint8(byte first, byte[] data) returns [int, byte[]] {
     return handleUint(data, 1);
 }
 
-function handleUint16(byte[] data) returns int {
+function handleUint16(byte first, byte[] data) returns [int, byte[]] {
     return handleUint(data, 2);
 }
 
-function handleUint32(byte[] data) returns int {
+function handleUint32(byte first, byte[] data) returns [int, byte[]] {
     return handleUint(data, 4);
 }
 
-function handleUint64(byte[] data) returns int {
+function handleUint64(byte first, byte[] data) returns [int, byte[]] {
     return handleUint(data, 8);
 }
 
-function handleSignedInt(byte[] data, int nBytes) returns int|error {
+function handleSignedInt(byte[] data, int nBytes) returns [int, byte[]]|error {
     int out = 0;
-    foreach int i in 1 ... nBytes {
-        out = (out << 8) | data[i];
+    int i = 0;
+    byte[] newdata = data;
+    while i < nBytes {
+        i = i + 1;
+        byte next;
+        [next, newdata] = core:shift(newdata);
+        out = (out << 8) | next;
     }
 
     if nBytes == 8 {
-        // hacky workaround, since 1 << 64 -> 1 bc 64-bit ints
+        // since 1 << 64 -> 1 bc 64-bit ints
         return error("decoding signed Int64 types is not currently supported, sorry!");
     }
-    return out - (1 << (8 * nBytes));
+    return [out - (1 << (8 * nBytes)), newdata];
 }
 
-function handleInt8(byte[] data) returns int|error {
+function handleInt8(byte first, byte[] data) returns [int, byte[]]|error {
     return handleSignedInt(data, 1);
 }
 
-function handleInt16(byte[] data) returns int|error {
+function handleInt16(byte first, byte[] data) returns [int, byte[]]|error {
     return handleSignedInt(data, 2);
 }
 
-function handleInt32(byte[] data) returns int|error {
+function handleInt32(byte first, byte[] data) returns [int, byte[]]|error {
     return handleSignedInt(data, 4);
 }
 
-function handleInt64(byte[] data) returns int|error {
+function handleInt64(byte first, byte[] data) returns [int, byte[]]|error {
     return handleSignedInt(data, 8);
 }

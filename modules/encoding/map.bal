@@ -8,9 +8,25 @@ function encode_map(map<json> data) returns byte[]|error {
         byte[] encoded_val = check encode(data[key]);
         output.push(...encoded_val);
     }
-    int first_byte = 0x80 + length;
-    if first_byte > 0xff {
-        return error("int overflow on length");
+
+    byte[] first;
+    if length < 16 {
+        first = [<byte>(0x80 + length)];
+    } else if length < 1 << 16 {
+        byte[] lengthBytes = unsignedIntToBytes(length);
+        while lengthBytes.length() < 2 {
+            lengthBytes = [0x00, ...lengthBytes];
+        }
+        first = [0xde, ...lengthBytes];
+    } else if length < 1 << 32 {
+        byte[] lengthBytes = unsignedIntToBytes(length);
+        while lengthBytes.length() < 4 {
+            lengthBytes = [0x00, ...lengthBytes];
+        }
+        first = [0xde, ...lengthBytes];
+    } else {
+        return error("maps with length > 2^32 are not supported.");
     }
-    return [<byte>first_byte, ...output];
+
+    return [...first, ...output];
 }

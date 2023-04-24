@@ -23,38 +23,33 @@ function decodeShift(byte[] data) returns [json, byte[]]|error {
         return [true, newdata];
     }
     if isInt(first) {
-        return [check handleInt(data), newdata];
+        return handleInt(first, newdata);
     }
     if isStr(first) {
-        return [check handleStr(data), newdata];
+        return handleStr(first, newdata);
     }
     if isArray(first) {
         return handleArray(first, newdata);
     }
-    if isFixMap(first) {
-        return [check handleFixMap(data), newdata];
-    }
-    if isMap16(first) {
-        return [check handleMap16(data), newdata];
-    }
-    if isMap32(first) {
-        return [check handleMap32(data), newdata];
+    if isMap(first) {
+        return handleMap(first, newdata);
     }
 
     return error("decoding type unknown: not implemented");
 }
 
 /// returns total number of bytes 
-function getItemLength(byte[] data) returns int|error {
-    byte first_byte = data[0];
-    if isPositiveFixInt(first_byte) {
-        return 1;
+function getItemLength(byte[] data) returns [int, byte[]]|error {
+    var [first, newdata] = core:shift(data);
+    if isPositiveFixInt(first) {
+        return [1, newdata];
     }
-    if isStr(first_byte) {
-        var [length, _] = check getStrLengthOffset(data);
-        return 1 + length;
+    if isStr(first) {
+        int length;
+        [length, newdata] = check getStrLength(first, data);
+        return [1 + length, newdata];
     }
-    return error(string `item length not implemented for 0x${first_byte.toHexString()}`);
+    return error(string `item length not implemented for 0x${first.toHexString()}`);
 }
 
 function getFixArrayLength(byte b) returns int {

@@ -36,9 +36,9 @@ function getArrayLength(byte first, byte[] data) returns [int, byte[]]|error {
     }
 
     if isArray16(first) {
-        return handleUintShift(data, 2);
+        return handleUint(data, 2);
     } else if isArray32(first) {
-        return handleUintShift(data, 4);
+        return handleUint(data, 4);
     }
 
     return error(string `error getting array length: unsupported array: 0x${first}`);
