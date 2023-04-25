@@ -1,4 +1,4 @@
-public function encode(json data) returns byte[]|error {
+public function encode(json|byte[] data) returns byte[]|error {
     if data is null {
         return [0xc0];
     }
@@ -13,6 +13,9 @@ public function encode(json data) returns byte[]|error {
     }
     if data is string {
         return encode_string(data);
+    }
+    if data is byte[] {
+        return encode_bin(data);
     }
     if data is json[] {
         return encode_array(data);
