@@ -1,4 +1,4 @@
-public function encode(json|byte[] data) returns byte[]|error {
+public function encode(json data) returns byte[]|error {
     if data is null {
         return [0xc0];
     }
