@@ -1,5 +1,5 @@
 [package]
 org = "drewmca"
 name = "msgpack"
-version = "0.0.5"
+version = "0.0.6"
 distribution = "2201.5.0"

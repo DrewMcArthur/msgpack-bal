@@ -14,6 +14,9 @@ public function encode(json data) returns byte[]|error {
     if data is string {
         return encode_string(data);
     }
+    if data is byte[] {
+        return encode_bin(data);
+    }
     if data is json[] {
         return encode_array(data);
     }

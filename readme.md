@@ -17,7 +17,7 @@ and then import it from your ballerina project by tossing this into your `Baller
 [[dependency]]
 org="drewmca"
 name="msgpack"
-version="0.0.5"
+version="0.0.6"
 repository="local"
 ```
 and your editor should see the module and let you use the library, something like this:
@@ -58,10 +58,10 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [x] Str8
     - [x] Str16
     - [ ] Str32 (implemented but untested)
-- [ ] bin format family
-    - [ ] Bin8
-    - [ ] Bin16
-    - [ ] Bin32
+- [x] bin format family
+    - [x] Bin8
+    - [x] Bin16
+    - [x] Bin32 (implemented but untested)
 - [x] array format family
     - [x] FixArray
     - [x] Array16
@@ -88,6 +88,7 @@ This is a quick and dirty implementation, generally building out functionality f
 - **v0.3**: implementation of some, but not all of the spec.  quick & dirty implementation.
 - **v0.4**: added benchmarks, coreutil for int->byte[] map16, str, & int impl
 - **v0.5**: implemented maps and arrays, also refactored decoding to pop bytes off as it goes
+- **v0.6**: implemented binary byte arrays, introduced some better error handling
 - **v1.0**: full compatibility with the msgpack spec, including a full test suite and benchmarks
 
 ### TODO:
@@ -96,3 +97,4 @@ This is a quick and dirty implementation, generally building out functionality f
 - [x] put a checkbox of msgpack format types here 
 - [x] separate functions into different files
 - [x] refactor decoding to pop bytes off the array
+- [ ] test long array/map values

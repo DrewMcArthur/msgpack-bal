@@ -37,8 +37,11 @@ function decodeShift(byte[] data) returns [json, byte[]]|error {
     if isMap(first) {
         return handleMap(first, newdata);
     }
+    if isBin(first) {
+        return handleBin(first, newdata);
+    }
 
-    return error("decoding type unknown: not implemented");
+    return error("decoding type unknown: not implemented", first_byte=first);
 }
 
 /// returns total number of bytes 
