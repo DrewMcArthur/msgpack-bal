@@ -50,9 +50,9 @@ from the [msgpack format spec](https://github.com/msgpack/msgpack/blob/master/sp
     - [x] Int16
     - [x] Int32
     - [ ] Int64 (not implemented bc ballerina cannot do `1 << 64`)
-- [ ] float format family
-    - [ ] Float32
-    - [ ] Float64
+- [x] float format family
+    - [x] Float32
+    - [x] Float64
 - [x] str format family
     - [x] FixStr 
     - [x] Str8
