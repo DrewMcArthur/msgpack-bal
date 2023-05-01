@@ -28,4 +28,4 @@ public function encode(json data) returns byte[]|EncodingError {
 
 type TypeEncodingError distinct error<record {typedesc t;}>;
 
-type EncodingError TypeEncodingError|IntEncodingError|StringEncodingError|ArrayEncodingError|BinEncodingError|ArrayEncodingError|MapEncodingError;
+public type EncodingError TypeEncodingError|IntEncodingError|StringEncodingError|ArrayEncodingError|BinEncodingError|ArrayEncodingError|MapEncodingError;

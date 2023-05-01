@@ -18,7 +18,7 @@ public function assertEqualsOrError(anydata|error actual, anydata|error expected
 
 public type TestCase record {
     json input;
-    byte[]|error output;
+    byte[] output;
 };
 
 public function getTestCaseMap() returns map<TestCase[]> {

@@ -58,7 +58,7 @@ function getItemLength(byte[] data) returns [int, byte[]]|LengthError {
     return error ItemLengthError(string `item length not implemented for 0x${first.toHexString()}`);
 }
 
-type DecodingError LeftoverDecodingError|ShiftDecodingError|IntDecodingError|BinDecodingError|ArrayDecodingError|MapDecodingError|LengthError|EmptyDataDecodingError;
+public type DecodingError LeftoverDecodingError|ShiftDecodingError|IntDecodingError|BinDecodingError|ArrayDecodingError|MapDecodingError|LengthError|EmptyDataDecodingError;
 
 type LeftoverDecodingError distinct error<record {byte[] leftover;}>;
 
