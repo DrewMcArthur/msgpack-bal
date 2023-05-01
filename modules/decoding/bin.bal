@@ -10,7 +10,7 @@ function isBin(byte first) returns boolean {
     return first == 0xc4 || first == 0xc5 || first == 0xc6;
 }
 
-function handleBin(byte first, byte[] data) returns [byte[], byte[]]|error {
+function handleBin(byte first, byte[] data) returns [byte[], byte[]]|BinDecodingError {
     int length_length = 0; // the number of bytes used to determine array length
     match first {
         0xc4 => {

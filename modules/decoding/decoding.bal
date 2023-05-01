@@ -1,14 +1,14 @@
 import msgpack.core;
 
-public function decode(byte[] data) returns json|error {
+public function decode(byte[] data) returns json|DecodingError {
     var [output, leftover] = check decodeShift(data);
     if leftover.length() > 0 {
-        return error("invalid encoding, did not expect leftover data after decoding");
+        return error LeftoverDecodingError("invalid encoding, did not expect leftover data after decoding", leftover = leftover);
     }
     return output;
 }
 
-function decodeShift(byte[] data) returns [json, byte[]]|error {
+function decodeShift(byte[] data) returns [json, byte[]]|DecodingError {
     if data.length() == 0 {
         return error("empty input");
     }
@@ -41,11 +41,11 @@ function decodeShift(byte[] data) returns [json, byte[]]|error {
         return handleBin(first, newdata);
     }
 
-    return error("decoding type unknown: not implemented", first_byte=first);
+    return error ShiftDecodingError("decoding type unknown: not implemented", first_byte = first);
 }
 
 /// returns total number of bytes 
-function getItemLength(byte[] data) returns [int, byte[]]|error {
+function getItemLength(byte[] data) returns [int, byte[]]|LengthError {
     var [first, newdata] = core:shift(data);
     if isPositiveFixInt(first) {
         return [1, newdata];
@@ -55,5 +55,15 @@ function getItemLength(byte[] data) returns [int, byte[]]|error {
         [length, newdata] = check getStrLength(first, data);
         return [1 + length, newdata];
     }
-    return error(string `item length not implemented for 0x${first.toHexString()}`);
+    return error ItemLengthError(string `item length not implemented for 0x${first.toHexString()}`);
 }
+
+type DecodingError LeftoverDecodingError|ShiftDecodingError|IntDecodingError|BinDecodingError|ArrayDecodingError|MapDecodingError|LengthError;
+
+type LeftoverDecodingError distinct error<record {byte[] leftover;}>;
+
+type ShiftDecodingError distinct error<record {byte first_byte;}>;
+
+type ItemLengthError (distinct error);
+
+type LengthError ItemLengthError|StrLengthError;
