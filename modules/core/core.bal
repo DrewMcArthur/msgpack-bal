@@ -66,7 +66,7 @@ public function toBytes(
         int num, int minArraySize = 0,
         boolean endianness = true,
         boolean signed = false
-) returns byte[]|error {
+) returns byte[] {
     byte[] bytes = [];
     int numLeft = num;
 
