@@ -10,7 +10,7 @@ public function decode(byte[] data) returns json|DecodingError {
 
 function decodeShift(byte[] data) returns [json, byte[]]|DecodingError {
     if data.length() == 0 {
-        return error("empty input");
+        return error EmptyDataDecodingError("empty input");
     }
 
     byte first;
@@ -58,7 +58,7 @@ function getItemLength(byte[] data) returns [int, byte[]]|LengthError {
     return error ItemLengthError(string `item length not implemented for 0x${first.toHexString()}`);
 }
 
-type DecodingError LeftoverDecodingError|ShiftDecodingError|IntDecodingError|BinDecodingError|ArrayDecodingError|MapDecodingError|LengthError;
+type DecodingError LeftoverDecodingError|ShiftDecodingError|IntDecodingError|BinDecodingError|ArrayDecodingError|MapDecodingError|LengthError|EmptyDataDecodingError;
 
 type LeftoverDecodingError distinct error<record {byte[] leftover;}>;
 
@@ -67,3 +67,5 @@ type ShiftDecodingError distinct error<record {byte first_byte;}>;
 type ItemLengthError (distinct error);
 
 type LengthError ItemLengthError|StrLengthError;
+
+type EmptyDataDecodingError distinct error;
