@@ -7,7 +7,7 @@ function isInt(byte b) returns boolean {
 
 type IntChecker function (byte) returns boolean;
 
-type IntHandler function (byte, byte[]) returns [int, byte[]]|error;
+type IntHandler function (byte, byte[]) returns [int, byte[]]|IntDecodingError;
 
 class IntFormatType {
     IntChecker checker;
@@ -33,13 +33,13 @@ function getIntFormatTypes() returns IntFormatType[] {
     ];
 }
 
-function handleInt(byte first, byte[] data) returns [int, byte[]]|error {
+function handleInt(byte first, byte[] data) returns [int, byte[]]|IntDecodingError {
     foreach IntFormatType fmt in getIntFormatTypes() {
         if fmt.checker(first) {
             return fmt.handler(first, data);
         }
     }
-    return error(string `not a known int ${first}`);
+    return error IntDecodingError(string `not a known int ${first}`, first_byte = first);
 }
 
 ////////////////
@@ -128,7 +128,7 @@ function handleUint64(byte first, byte[] data) returns [int, byte[]] {
     return handleUint(data, 8);
 }
 
-function handleSignedInt(byte[] data, int nBytes) returns [int, byte[]]|error {
+function handleSignedInt(byte[] data, int nBytes) returns [int, byte[]]|IntDecodingError {
     int out = 0;
     int i = 0;
     byte[] newdata = data;
@@ -141,23 +141,25 @@ function handleSignedInt(byte[] data, int nBytes) returns [int, byte[]]|error {
 
     if nBytes == 8 {
         // since 1 << 64 -> 1 bc 64-bit ints
-        return error("decoding signed Int64 types is not currently supported, sorry!");
+        return error IntDecodingError("decoding signed Int64 types is not currently supported, sorry!", first_byte = data[0]);
     }
     return [out - (1 << (8 * nBytes)), newdata];
 }
 
-function handleInt8(byte first, byte[] data) returns [int, byte[]]|error {
+function handleInt8(byte first, byte[] data) returns [int, byte[]]|IntDecodingError {
     return handleSignedInt(data, 1);
 }
 
-function handleInt16(byte first, byte[] data) returns [int, byte[]]|error {
+function handleInt16(byte first, byte[] data) returns [int, byte[]]|IntDecodingError {
     return handleSignedInt(data, 2);
 }
 
-function handleInt32(byte first, byte[] data) returns [int, byte[]]|error {
+function handleInt32(byte first, byte[] data) returns [int, byte[]]|IntDecodingError {
     return handleSignedInt(data, 4);
 }
 
-function handleInt64(byte first, byte[] data) returns [int, byte[]]|error {
+function handleInt64(byte first, byte[] data) returns [int, byte[]]|IntDecodingError {
     return handleSignedInt(data, 8);
 }
+
+type IntDecodingError distinct error<record {byte first_byte;}>;

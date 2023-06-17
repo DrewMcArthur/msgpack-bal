@@ -2,7 +2,7 @@ import msgpack.core;
 
 type BinEncodingError distinct error<record {int length;}>;
 
-function encode_bin(byte[] data) returns byte[]|error {
+function encode_bin(byte[] data) returns byte[]|BinEncodingError {
     byte first;
     int length_length; // number of bytes to store the array length
     int len = data.length();
@@ -19,5 +19,5 @@ function encode_bin(byte[] data) returns byte[]|error {
         return error BinEncodingError("Cannot encode byte[] that large.", length = len);
     }
 
-    return [first, ...check core:toBytes(len, length_length), ...data];
+    return [first, ...core:toBytes(len, length_length), ...data];
 }

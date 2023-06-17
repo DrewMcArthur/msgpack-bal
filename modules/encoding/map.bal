@@ -1,6 +1,6 @@
 import msgpack.core;
 
-function encode_map(map<json> data) returns byte[]|error {
+function encode_map(map<json> data) returns byte[]|EncodingError {
     int length = 0;
     byte[] output = [];
     foreach string key in data.keys() {
@@ -15,12 +15,14 @@ function encode_map(map<json> data) returns byte[]|error {
     if length < 16 {
         first = [<byte>(0x80 + length)];
     } else if length < 1 << 16 {
-        first = [0xde, ...check core:toBytes(length, 2)];
+        first = [0xde, ...core:toBytes(length, 2)];
     } else if length < 1 << 32 {
-        first = [0xdf, ...check core:toBytes(length, 4)];
+        first = [0xdf, ...core:toBytes(length, 4)];
     } else {
-        return error("maps with length > 2^32 are not supported.");
+        return error MapEncodingError("maps with length > 2^32 are not supported.", length = length);
     }
 
     return [...first, ...output];
 }
+
+type MapEncodingError distinct error<record {int length;}>;

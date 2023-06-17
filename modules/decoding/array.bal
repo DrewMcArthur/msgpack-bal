@@ -14,7 +14,7 @@ function isArray32(byte first) returns boolean {
     return first == 0xdd;
 }
 
-function handleArray(byte first, byte[] data) returns [json[], byte[]]|error {
+function handleArray(byte first, byte[] data) returns [json[], byte[]]|DecodingError {
     int len;
     byte[] newdata = data;
     [len, newdata] = check getArrayLength(first, newdata);
@@ -29,7 +29,7 @@ function handleArray(byte first, byte[] data) returns [json[], byte[]]|error {
     return [out, newdata];
 }
 
-function getArrayLength(byte first, byte[] data) returns [int, byte[]]|error {
+function getArrayLength(byte first, byte[] data) returns [int, byte[]]|ArrayDecodingError {
     // return the length of the upcoming array
     if isFixArray(first) {
         return [first & 0x0f, data];
@@ -41,5 +41,7 @@ function getArrayLength(byte first, byte[] data) returns [int, byte[]]|error {
         return handleUint(data, 4);
     }
 
-    return error(string `error getting array length: unsupported array: 0x${first}`);
+    return error ArrayDecodingError(string `error getting array length: unsupported array: 0x${first}`, first_byte = first);
 }
+
+type ArrayDecodingError distinct error<record {byte first_byte;}>;

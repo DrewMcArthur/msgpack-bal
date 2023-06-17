@@ -5,7 +5,7 @@ import msgpack.decoding;
 #
 # + data - the data to be encoded
 # + return - the encoded data an array of bytes
-public function encode(json data) returns byte[]|error {
+public function encode(json data) returns byte[]|encoding:EncodingError {
     return encoding:encode(data);
 }
 
@@ -13,6 +13,6 @@ public function encode(json data) returns byte[]|error {
 #
 # + data - byte array encoded according to msgpack spec
 # + return - deserialized data
-public function decode(byte[] data) returns json|error {
+public function decode(byte[] data) returns json|decoding:DecodingError {
     return decoding:decode(data);
 }

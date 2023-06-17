@@ -1,4 +1,4 @@
-function encodeInt(int n) returns byte[]|error {
+function encodeInt(int n) returns byte[]|IntEncodingError {
     if n < -32 {
         return encodeSignedInt(n);
     }
@@ -8,7 +8,7 @@ function encodeInt(int n) returns byte[]|error {
     return check encodeUnsignedInt(n);
 }
 
-function encodeSignedInt(int n) returns byte[]|error {
+function encodeSignedInt(int n) returns byte[]|IntEncodingError {
     byte[] intBytes = signedIntToBytes(n);
     byte first;
 
@@ -24,7 +24,7 @@ function encodeSignedInt(int n) returns byte[]|error {
     } else if n <= -32 {
         first = 0xd0;
     } else {
-        return error("wrong handler for negativefixint");
+        return error IntEncodingError("signed value outside of supported bounds (< -32768^2)", val = n);
     }
     return [first, ...intBytes.reverse()];
 }
@@ -57,7 +57,7 @@ function signedIntToBytes(int n) returns byte[] {
     return out;
 }
 
-function encodeUnsignedInt(int n) returns byte[]|error {
+function encodeUnsignedInt(int n) returns byte[]|IntEncodingError {
     byte[] uintBytes = unsignedIntToBytes(n);
     if uintBytes.length() == 1 {
         if (uintBytes[0] & 0x80) == 0 {
@@ -86,7 +86,7 @@ function encodeUnsignedInt(int n) returns byte[]|error {
     if uintBytes.length() == 8 {
         return [0xcf, ...uintBytes];
     }
-    return error("unknown int type");
+    return error IntEncodingError("unknown int type", val = n);
 }
 
 function padBytesLeft(byte[] bytes, int desiredLength) returns byte[] {
@@ -95,3 +95,5 @@ function padBytesLeft(byte[] bytes, int desiredLength) returns byte[] {
     }
     return bytes;
 }
+
+type IntEncodingError distinct error<record {int val;}>;
