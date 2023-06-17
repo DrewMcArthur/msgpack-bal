@@ -1,4 +1,4 @@
-function encode_string(string data) returns byte[]|StringEncodingError {
+function encodeString(string data) returns byte[]|StringEncodingError {
     byte[] first = check getStrlenIndicatorBytes(data.length());
     return [...first, ...data.toBytes()];
 }
