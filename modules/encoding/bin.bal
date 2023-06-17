@@ -2,7 +2,7 @@ import msgpack.core;
 
 type BinEncodingError distinct error<record {int length;}>;
 
-function encode_bin(byte[] data) returns byte[]|BinEncodingError {
+function encodeBin(byte[] data) returns byte[]|BinEncodingError {
     byte first;
     int length_length; // number of bytes to store the array length
     int len = data.length();

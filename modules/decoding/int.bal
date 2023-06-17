@@ -140,9 +140,11 @@ function handleSignedInt(byte[] data, int nBytes) returns [int, byte[]]|IntDecod
     }
 
     if nBytes == 8 {
-        // since 1 << 64 -> 1 bc 64-bit ints
-        return error IntDecodingError("decoding signed Int64 types is not currently supported, sorry!", first_byte = data[0]);
+        // edge case, bc 64 bit ints cannot store 1 << 64
+        int QUARTER_MAX_INT = 1 << 62;
+        return [out - QUARTER_MAX_INT - QUARTER_MAX_INT - QUARTER_MAX_INT - QUARTER_MAX_INT, newdata];
     }
+
     return [out - (1 << (8 * nBytes)), newdata];
 }
 

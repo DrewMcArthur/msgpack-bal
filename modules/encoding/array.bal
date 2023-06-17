@@ -2,7 +2,7 @@ import msgpack.core;
 
 type ArrayEncodingError distinct error<record {int length;}>;
 
-function encode_array(json[] data) returns byte[]|EncodingError {
+function encodeArray(json[] data) returns byte[]|EncodingError {
     int data_length = data.length();
     if data_length < 16 {
         return encode_fixarray(data);

@@ -1,6 +1,6 @@
 import msgpack.core;
 
-function encode_map(map<json> data) returns byte[]|EncodingError {
+function encodeMap(map<json> data) returns byte[]|EncodingError {
     int length = 0;
     byte[] output = [];
     foreach string key in data.keys() {

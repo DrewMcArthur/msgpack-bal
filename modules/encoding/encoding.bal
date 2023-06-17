@@ -12,16 +12,16 @@ public function encode(json data) returns byte[]|EncodingError {
         return encodeInt(data);
     }
     if data is string {
-        return encode_string(data);
+        return encodeString(data);
     }
     if data is byte[] {
-        return encode_bin(data);
+        return encodeBin(data);
     }
     if data is json[] {
-        return encode_array(data);
+        return encodeArray(data);
     }
     if data is map<any> {
-        return encode_map(data);
+        return encodeMap(data);
     }
     return error TypeEncodingError("input data is not of a supported type.", t = (typeof data));
 }
